@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +45,7 @@ public class ActiveRewards extends JavaPlugin {
 
     private Set<Player> lastPlayerList = Collections.newSetFromMap(new WeakHashMap<Player, Boolean>());
 
-    private Set<RewardAction> actions = new HashSet<RewardAction>();
+    private List<RewardAction> actions = new ArrayList<RewardAction>();
 
     @Override
     public void onEnable() {
