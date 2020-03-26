@@ -1,0 +1,12 @@
+name: ActiveRewards
+main: dev.itsmeow.activerewards.ActiveRewards
+version: 1.0.0
+api-version: 1.15
+depend: []
+commands: 
+   activerewards:
+      description: Base command for ActiveRewards
+      usage: /activerewards
+   ar:
+      description: Base command for ActiveRewards
+      usage: /activerewards
