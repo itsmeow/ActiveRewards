@@ -54,6 +54,7 @@ public class SQLConnection {
         queueAction(() -> {
             try {
                 ActiveRewards.debug(query);
+                checkConnection();
                 callback.accept(statement.executeQuery(query));
             } catch(SQLException e) {
                 e.printStackTrace();
@@ -63,11 +64,13 @@ public class SQLConnection {
 
     public ResultSet execQueryBlocking(String query) throws SQLException {
         ActiveRewards.debug(query);
+        checkConnection();
         return statement.executeQuery(query);
     }
-    
+
     public void execUpdateBlocking(String update) throws SQLException {
         ActiveRewards.debug(update);
+        checkConnection();
         statement.executeUpdate(update);
     }
 
@@ -79,12 +82,25 @@ public class SQLConnection {
         queueAction(() -> {
             try {
                 ActiveRewards.debug(update);
+                checkConnection();
                 statement.executeUpdate(update);
                 callback.run();
             } catch(SQLException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void checkConnection() {
+        try {
+            if(statement == null || statement.isClosed() && db != null && !db.isClosed()) {
+                statement = db.createStatement();
+            } else if(db == null || db.isClosed()) {
+                openConnection();
+            }
+        } catch(SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void openConnection() throws SQLException, ClassNotFoundException {
@@ -101,7 +117,9 @@ public class SQLConnection {
             db = DriverManager.getConnection("jdbc:mysql://" + db_host + ":" + db_port + "/" + db_database + "?useSSL=" + db_useSSL, db_username, db_password);
             statement = db.createStatement();
             ActiveRewards.debug("THREAD START");
-            this.sql_thread.start();
+            if(!this.sql_thread.isAlive()) {
+                this.sql_thread.start();
+            }
         }
     }
 
